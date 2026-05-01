@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus ER Model - Management Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f9fafb;
+        }
+        h1, h2, h3 { color: #1f2937; }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        pre {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        .highlight { color: #2563eb; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Smart Campus Resource Optimization Platform</h1>
+    <p><strong>Comprehensive ER Model including College Management Requirements</strong></p>
+    <p>This expanded model includes high-level entities accessed by college management, such as Buildings, Maintenance Logs, and Usage Reports for tracking efficiency and costs.</p>
+
+    <div class="card">
+        <h2>1. Entity-Relationship Diagram (Mermaid)</h2>
+        <div class="mermaid">
+        erDiagram
+            USER ||--o{ BOOKING : "creates"
+            USER ||--o{ NOTIFICATION : "receives"
+            USER }|--|| DEPARTMENT : "belongs to"
+            
+            STUDENT ||--|| USER : "is a"
+            FACULTY ||--|| USER : "is a"
+            ADMIN ||--|| USER : "is a"
+
+            FACULTY ||--o{ COURSE : "teaches"
+            COURSE }|--|{ RESOURCE : "uses"
+
+            BUILDING ||--o{ RESOURCE : "contains"
+            
+            RESOURCE ||--o{ BOOKING : "has"
+            RESOURCE ||--o{ MAINTENANCE_LOG : "undergoes"
+            RESOURCE ||--o{ USAGE_REPORT : "generates"
+
+            TIME_SLOT ||--o{ BOOKING : "schedules"
+
+            ADMIN ||--o{ USAGE_REPORT : "reviews & analyzes"
+            ADMIN ||--o{ MAINTENANCE_LOG : "authorizes"
+            ADMIN ||--o{ RESOURCE : "manages & optimizes"
+            ADMIN ||--o{ BOOKING : "oversees & resolves conflicts"
+            ADMIN ||--o{ BUILDING : "manages facilities"
+
+            USER {
+                int user_id PK
+                string name
+                string email
+                string user_type "Student/Faculty/Admin"
+                int department_id FK
+            }
+            ADMIN {
+                int admin_id PK
+                int user_id FK
+                string oversight_level "Supreme College Management"
+            }
+            BUILDING {
+                int building_id PK
+                string building_name
+                string zone
+            }
+            RESOURCE {
+                int resource_id PK
+                int building_id FK
+                string type
+                int capacity
+                string status "Active/Maintenance"
+            }
+            MAINTENANCE_LOG {
+                int log_id PK
+                int resource_id FK
+                string issue_description
+                float cost
+                date start_date
+                date end_date
+                string status
+            }
+            USAGE_REPORT {
+                int report_id PK
+                int resource_id FK
+                string month_year
+                float utilization_percentage
+                int total_conflicts_resolved
+            }
+            BOOKING {
+                int booking_id PK
+                int user_id FK
+                int resource_id FK
+                int slot_id FK
+                string status
+            }
+            TIME_SLOT {
+                int slot_id PK
+                datetime start_time
+                datetime end_time
+            }
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. College Management Specific Relationships</h2>
+        <ul>
+            <li><span class="highlight">Management (1) → (N) Usage Report:</span> College management reviews aggregated monthly/weekly usage reports to identify underutilized resources and track ROI.</li>
+            <li><span class="highlight">Management (1) → (N) Maintenance Log:</span> Management oversees repair costs, scheduling, and downtime for all campus resources.</li>
+            <li><span class="highlight">Building (1) → (N) Resource:</span> Resources are now grouped by Physical Buildings/Zones, allowing management to analyze efficiency on a building-by-building basis (e.g., shutting down HVAC in an empty wing).</li>
+            <li><span class="highlight">Resource (1) → (N) Maintenance Log:</span> A resource can have multiple maintenance histories impacting its availability for bookings.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>3. Additional SQL Table Structure (Management Focus)</h2>
+        <pre><code>
+-- College Management Table
+CREATE TABLE Management (
+    management_id VARCHAR(50) PRIMARY KEY,
+    user_id INT UNIQUE REFERENCES Users(user_id) ON DELETE CASCADE,
+    oversight_level VARCHAR(50) NOT NULL -- e.g., 'Dean', 'Facilities Head', 'Provost'
+);
+
+-- Buildings Table
+CREATE TABLE Buildings (
+    building_id SERIAL PRIMARY KEY,
+    building_name VARCHAR(100) NOT NULL,
+    zone VARCHAR(50) NOT NULL
+);
+
+-- Maintenance Logs Table
+CREATE TABLE Maintenance_Logs (
+    log_id SERIAL PRIMARY KEY,
+    resource_id INT REFERENCES Resources(resource_id) ON DELETE CASCADE,
+    issue_description TEXT NOT NULL,
+    cost DECIMAL(10, 2),
+    start_date DATE NOT NULL,
+    end_date DATE,
+    status VARCHAR(20) CHECK (status IN ('Scheduled', 'In Progress', 'Completed'))
+);
+
+-- Usage Reports Table (Aggregated Analytics for Management)
+CREATE TABLE Usage_Reports (
+    report_id SERIAL PRIMARY KEY,
+    resource_id INT REFERENCES Resources(resource_id) ON DELETE CASCADE,
+    month_year VARCHAR(7) NOT NULL, -- Format: YYYY-MM
+    utilization_percentage DECIMAL(5, 2) NOT NULL,
+    total_conflicts_resolved INT DEFAULT 0,
+    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+        </code></pre>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

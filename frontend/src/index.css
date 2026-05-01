@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Outfit', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── PREMIUM CALENDAR STYLES ─── */
+.rbc-calendar {
+  @apply bg-white dark:bg-gray-800 rounded-3xl border-none font-sans overflow-hidden p-4 shadow-xl border border-gray-100 dark:border-gray-700;
+}
+
+.rbc-toolbar {
+  @apply mb-6 flex-wrap gap-4;
+}
+
+.rbc-toolbar button {
+  @apply border-none bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-2 rounded-xl font-bold transition-all hover:bg-primary hover:text-white active:scale-95 shadow-sm;
+}
+
+.rbc-toolbar button.rbc-active {
+  @apply bg-primary text-white shadow-lg shadow-primary/30 !important;
+}
+
+.rbc-toolbar-label {
+  @apply text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight;
+}
+
+.rbc-header {
+  @apply py-4 text-xs font-black uppercase tracking-[0.2em] text-gray-400 border-none !important;
+}
+
+.rbc-month-view, .rbc-time-view {
+  @apply border-gray-100 dark:border-gray-700 border-2 rounded-2xl overflow-hidden !important;
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  @apply border-gray-100 dark:border-gray-700 !important;
+}
+
+.rbc-month-row + .rbc-month-row {
+  @apply border-gray-100 dark:border-gray-700 !important;
+}
+
+.rbc-event {
+  @apply rounded-xl px-3 py-1.5 font-bold text-xs shadow-md border-none transition-transform hover:scale-[1.03] !important;
+  background-color: #3b82f6 !important;
+}
+
+.rbc-off-range-bg {
+  @apply bg-gray-50/50 dark:bg-gray-900/50 !important;
+}
+
+.rbc-today {
+  @apply bg-blue-50/50 dark:bg-blue-900/20 !important;
+}
+
+.rbc-time-content {
+  @apply border-gray-100 dark:border-gray-700 !important;
+}
+
+.rbc-timeslot-group {
+  @apply border-gray-100 dark:border-gray-700 !important;
+}
+
+.rbc-time-header-content {
+  @apply border-gray-100 dark:border-gray-700 !important;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── CUSTOM SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors;
+}
