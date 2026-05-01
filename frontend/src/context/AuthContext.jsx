@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+axios.defaults.baseURL = "https://smart-campus-system-2.onrender.com";
 
 export const AuthContext = createContext();
 
